@@ -1,0 +1,237 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .report { padding: 1.5rem 0; max-width: 860px; }
+  .section { margin-bottom: 2rem; }
+  .section-title {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--color-text-secondary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    padding-bottom: 8px; margin-bottom: 1rem;
+  }
+  .kpi-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .kpi { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px 16px; }
+  .kpi-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .kpi-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .kpi-value.red { color: #A32D2D; }
+  .kpi-value.amber { color: #854F0B; }
+  .kpi-value.green { color: #3B6D11; }
+  .issue-list { display: flex; flex-direction: column; gap: 8px; }
+  .issue {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 12px 14px;
+  }
+  .badge {
+    font-size: 10px; font-weight: 500; padding: 3px 8px;
+    border-radius: 4px; white-space: nowrap; margin-top: 1px; flex-shrink: 0;
+  }
+  .badge.critical { background: #FCEBEB; color: #791F1F; }
+  .badge.moderate { background: #FAEEDA; color: #633806; }
+  .badge.low { background: #EAF3DE; color: #27500A; }
+  .issue-text { font-size: 14px; color: var(--color-text-primary); line-height: 1.5; }
+  .issue-text strong { font-weight: 500; display: block; margin-bottom: 2px; }
+  .issue-text span { font-size: 13px; color: var(--color-text-secondary); }
+
+  .cat-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+  .cat-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 14px;
+  }
+  .cat-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .cat-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .cat-count { font-size: 12px; background: #E6F1FB; color: #0C447C; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+  .cat-items { font-size: 12px; color: var(--color-text-secondary); line-height: 1.7; }
+  .ds-tag { display: inline-block; font-size: 10px; background: #EEEDFE; color: #3C3489; padding: 1px 6px; border-radius: 3px; margin-left: 4px; }
+
+  .services-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+  .svc-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 14px;
+  }
+  .svc-num { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .svc-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .svc-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; }
+
+  .msg-box {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-left: 3px solid #534AB7;
+    border-radius: var(--border-radius-md);
+    padding: 1.2rem 1.4rem;
+    font-size: 14px; line-height: 1.8; color: var(--color-text-primary);
+  }
+  .tab-row { display: flex; gap: 6px; margin-bottom: 1.2rem; flex-wrap: wrap; }
+  .tab {
+    font-size: 12px; padding: 5px 14px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 20px; cursor: pointer;
+    background: var(--color-background-primary);
+    color: var(--color-text-secondary);
+  }
+  .tab.active { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; font-weight: 500; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+</style>
+
+<div class="report">
+  <h2 class="sr-only">Ailes Jewelry Store Audit Report</h2>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Current products</div><div class="kpi-value red">90</div></div>
+    <div class="kpi"><div class="kpi-label">Recommended min.</div><div class="kpi-value green">300+</div></div>
+    <div class="kpi"><div class="kpi-label">Product gap</div><div class="kpi-value amber">210+</div></div>
+    <div class="kpi"><div class="kpi-label">Issues found</div><div class="kpi-value red">14</div></div>
+  </div>
+
+  <div class="tab-row">
+    <div class="tab active" onclick="switchTab('issues')">Store issues</div>
+    <div class="tab" onclick="switchTab('cats')">Product expansion</div>
+    <div class="tab" onclick="switchTab('redesign')">Redesign plan</div>
+    <div class="tab" onclick="switchTab('services')">Services to offer</div>
+    <div class="tab" onclick="switchTab('msg')">Client message</div>
+  </div>
+
+  <div id="panel-issues" class="tab-panel active">
+    <div class="section-title">Issues identified — Ailes Jewelry</div>
+    <div class="issue-list">
+      <div class="issue"><span class="badge critical">Critical</span><div class="issue-text"><strong>Only 90 products listed</strong><span>Shopify best practice is 300+ for algorithm trust, SEO depth, and conversion variety. Thin catalogs signal low brand credibility.</span></div></div>
+      <div class="issue"><span class="badge critical">Critical</span><div class="issue-text"><strong>No hero banner CTA button</strong><span>The homepage hero image has no clear "Shop Now" or "Explore Collection" call-to-action button — visitors have no guided entry point.</span></div></div>
+      <div class="issue"><span class="badge critical">Critical</span><div class="issue-text"><strong>No search bar visible on desktop homepage</strong><span>Search is hidden behind a small icon. For a 90+ product store, a prominent search is essential for product discovery.</span></div></div>
+      <div class="issue"><span class="badge critical">Critical</span><div class="issue-text"><strong>No "New Arrivals" or "Best Sellers" section</strong><span>There is no highlighted featured collection on the homepage that signals social proof or promotes trending products.</span></div></div>
+      <div class="issue"><span class="badge critical">Critical</span><div class="issue-text"><strong>Prices only in AED — no currency switcher</strong><span>All prices display in UAE Dirhams only. International buyers (UK, US, EU) cannot see local pricing, creating friction and abandoned carts.</span></div></div>
+      <div class="issue"><span class="badge moderate">Moderate</span><div class="issue-text"><strong>Navigation is confusing — dual menu structures</strong><span>"Shop by Creation" and "Shop by Collection" overlap in purpose. A customer looking for "earrings" and "The Wave" doesn't know which menu to use for gifting.</span></div></div>
+      <div class="issue"><span class="badge moderate">Moderate</span><div class="issue-text"><strong>No product bundles or gift sets</strong><span>No bundle options (e.g. necklace + earring matching sets) to increase average order value — a missed revenue opportunity especially for a luxury brand.</span></div></div>
+      <div class="issue"><span class="badge moderate">Moderate</span><div class="issue-text"><strong>No customer reviews / social proof on product pages</strong><span>High-ticket items (Dhs. 9,000–25,000) with no reviews or ratings. Luxury buyers research heavily — absent reviews reduce conversion.</span></div></div>
+      <div class="issue"><span class="badge moderate">Moderate</span><div class="issue-text"><strong>No email capture / newsletter popup</strong><span>There is no lead generation mechanism — no welcome discount popup, no newsletter signup in the footer. Email list building is zero.</span></div></div>
+      <div class="issue"><span class="badge moderate">Moderate</span><div class="issue-text"><strong>No Instagram feed embedded on the homepage</strong><span>The brand has an active Instagram (@ailesjewelry) but it's only linked in the footer — no shoppable feed or visual social proof on homepage.</span></div></div>
+      <div class="issue"><span class="badge moderate">Moderate</span><div class="issue-text"><strong>Footer is duplicated</strong><span>The footer "Quick Links" section appears twice in the HTML — a layout bug that looks unprofessional and may confuse screen readers / SEO crawlers.</span></div></div>
+      <div class="issue"><span class="badge low">Low</span><div class="issue-text"><strong>No "About Us" story on homepage</strong><span>The About Us page exists but the homepage has no brand story section. Luxury buyers connect emotionally — the Dubai/Jumeirah origin and craft story should be front and center.</span></div></div>
+      <div class="issue"><span class="badge low">Low</span><div class="issue-text"><strong>No size guide or material info on product pages</strong><span>Rings and bracelets require sizing information. No size guide link is visible in the navigation or on product pages.</span></div></div>
+      <div class="issue"><span class="badge low">Low</span><div class="issue-text"><strong>No "Related Products" or upsell section on product pages</strong><span>Product pages appear to end with the product detail — no cross-sell or recommendation engine to keep shoppers browsing.</span></div></div>
+    </div>
+  </div>
+
+  <div id="panel-cats" class="tab-panel">
+    <div class="section-title">Proposed product categories — expanded to 300+ SKUs</div>
+    <div style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1rem; line-height: 1.6;">
+      Physical products stay as the premium anchor. Dropshipping (<span class="ds-tag">DS</span>) fills the catalog with complementary fine + fashion jewelry. Together they create a full-range offering.
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card">
+        <div class="cat-head"><span class="cat-name">Necklaces & Pendants</span><span class="cat-count">55 SKUs</span></div>
+        <div class="cat-items">
+          Sport pendant series (existing) · Chain necklaces — gold/silver <span class="ds-tag">DS</span> · Layering sets (2–3 piece) <span class="ds-tag">DS</span> · Initial letter pendants <span class="ds-tag">DS</span> · Birthstone pendants <span class="ds-tag">DS</span> · Locket necklaces <span class="ds-tag">DS</span> · Choker styles <span class="ds-tag">DS</span> · Bespoke custom pendants
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-head"><span class="cat-name">Earrings</span><span class="cat-count">55 SKUs</span></div>
+        <div class="cat-items">
+          Studs — sport & classic · Ear cuffs (existing) · Huggie hoops <span class="ds-tag">DS</span> · Drop earrings <span class="ds-tag">DS</span> · Ear climbers <span class="ds-tag">DS</span> · Mismatched pair sets <span class="ds-tag">DS</span> · Pearl studs <span class="ds-tag">DS</span> · Diamond simulant hoops <span class="ds-tag">DS</span>
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-head"><span class="cat-name">Rings</span><span class="cat-count">50 SKUs</span></div>
+        <div class="cat-items">
+          Bold Wave ring (existing) · Stackable bands <span class="ds-tag">DS</span> · Signet rings <span class="ds-tag">DS</span> · Midi rings <span class="ds-tag">DS</span> · Statement cocktail rings <span class="ds-tag">DS</span> · Birthstone rings <span class="ds-tag">DS</span> · Twisted band rings <span class="ds-tag">DS</span>
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-head"><span class="cat-name">Bracelets</span><span class="cat-count">50 SKUs</span></div>
+        <div class="cat-items">
+          Chaînes bracelet (existing) · Tennis bracelets <span class="ds-tag">DS</span> · Charm bracelets <span class="ds-tag">DS</span> · Cuff bangles <span class="ds-tag">DS</span> · Beaded bracelets <span class="ds-tag">DS</span> · Layering sets 3-pack <span class="ds-tag">DS</span> · Sports-themed charms <span class="ds-tag">DS</span>
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-head"><span class="cat-name">Anklets</span><span class="cat-count">25 SKUs</span></div>
+        <div class="cat-items">
+          Existing anklets · Dainty chain anklets <span class="ds-tag">DS</span> · Charm anklets <span class="ds-tag">DS</span> · Beaded anklets <span class="ds-tag">DS</span> · Layering sets <span class="ds-tag">DS</span>
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-head"><span class="cat-name">Gift Sets & Bundles</span><span class="cat-count">30 SKUs</span></div>
+        <div class="cat-items">
+          Necklace + earring matching sets · "Active Girl" starter pack · Sport pendant + bracelet duo · Signature gift box sets · Bespoke engraved duo · Build-your-own bundle
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-head"><span class="cat-name">Oura Ring Jackets</span><span class="cat-count">20 SKUs</span></div>
+        <div class="cat-items">
+          Existing jacket styles · New colorway variants · Engraved editions · Gemstone-set jackets <span class="ds-tag">DS</span> · Limited edition sport themes
+        </div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-head"><span class="cat-name">Jewelry Care & Accessories</span><span class="cat-count">15 SKUs</span></div>
+        <div class="cat-items">
+          Jewelry boxes <span class="ds-tag">DS</span> · Polishing cloths <span class="ds-tag">DS</span> · Travel pouches <span class="ds-tag">DS</span> · Gift wrapping add-on · Chain extenders <span class="ds-tag">DS</span> · Ear back replacements <span class="ds-tag">DS</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 1rem; padding: 12px 14px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); font-size: 13px; color: var(--color-text-secondary); line-height: 1.6;">
+      <strong style="font-weight: 500; color: var(--color-text-primary);">Why combine physical + dropshipping?</strong> — Physical products carry your brand premium and highest margins. Dropshipping products fill price gaps (entry-level items from Dhs. 150–800), attract new buyers who grow into your premium line, and keep the catalog fresh without inventory risk. Platforms like Spocket, AutoDS, and CJ Dropshipping supply fine jewelry-adjacent products with UAE shipping.
+    </div>
+  </div>
+
+  <div id="panel-redesign" class="tab-panel">
+    <div class="section-title">Store redesign recommendations</div>
+    <div class="issue-list">
+      <div class="issue"><span class="badge" style="background:#E1F5EE;color:#085041;">Homepage</span><div class="issue-text"><strong>Full-width hero with dual CTA buttons</strong><span>Primary: "Shop The Active Collection" → Secondary: "Bespoke Creations". Add a transparent overlay with brand tagline displayed prominently.</span></div></div>
+      <div class="issue"><span class="badge" style="background:#E1F5EE;color:#085041;">Homepage</span><div class="issue-text"><strong>Add 3-step trust bar below hero</strong><span>Icon row: "Crafted in Fine Gold" · "Free UAE Shipping" · "Bespoke Available" — builds immediate purchase confidence.</span></div></div>
+      <div class="issue"><span class="badge" style="background:#E1F5EE;color:#085041;">Homepage</span><div class="issue-text"><strong>Featured collections grid (3-column)</strong><span>Replace current scattered product carousel with a structured 3-column grid: New Arrivals · Best Sellers · The Active Collection. Each with collection image and "Explore" CTA.</span></div></div>
+      <div class="issue"><span class="badge" style="background:#E1F5EE;color:#085041;">Navigation</span><div class="issue-text"><strong>Simplify to 5 main nav items</strong><span>Home · Shop (mega menu by type + collection) · Bespoke · Our Story · Contact. Remove the confusing dual dropdown approach. One unified "Shop" mega-menu.</span></div></div>
+      <div class="issue"><span class="badge" style="background:#E1F5EE;color:#085041;">Navigation</span><div class="issue-text"><strong>Add announcement bar</strong><span>Top sticky bar: "Free shipping on orders above Dhs. 500 · WhatsApp for bespoke orders" — currently absent, wastes prime real estate.</span></div></div>
+      <div class="issue"><span class="badge" style="background:#E1F5EE;color:#085041;">Product pages</span><div class="issue-text"><strong>Add material details, care guide, and size guide tab</strong><span>Each product page should have tabbed sections: Description · Materials & Care · Sizing · Delivery. Currently product pages lack this structured detail.</span></div></div>
+      <div class="issue"><span class="badge" style="background:#E1F5EE;color:#085041;">Product pages</span><div class="issue-text"><strong>Add "Complete the Look" cross-sell section</strong><span>Below the add-to-cart section, show 3–4 complementary pieces. For a pendant, show matching earrings and bracelet from the same collection.</span></div></div>
+      <div class="issue"><span class="badge" style="background:#E1F5EE;color:#085041;">Homepage</span><div class="issue-text"><strong>Embed Instagram shoppable feed</strong><span>Use a Shopify app (e.g. Instafeed) to embed @ailesjewelry posts directly on the homepage. Turns social content into a conversion tool.</span></div></div>
+      <div class="issue"><span class="badge" style="background:#E1F5EE;color:#085041;">Conversion</span><div class="issue-text"><strong>Add email capture popup with 10% welcome offer</strong><span>Exit-intent popup with a "Get 10% off your first order" incentive builds the email list for retargeting campaigns.</span></div></div>
+      <div class="issue"><span class="badge" style="background:#E1F5EE;color:#085041;">Footer</span><div class="issue-text"><strong>Fix duplicate footer + add currency selector</strong><span>Remove the duplicated links block. Add a visible multi-currency selector (GBP, USD, EUR, AED) to cater to the international buyer base.</span></div></div>
+    </div>
+  </div>
+
+  <div id="panel-services" class="tab-panel">
+    <div class="section-title">Services to offer the store owner</div>
+    <div class="services-grid">
+      <div class="svc-card"><div class="svc-num">01</div><div class="svc-title">Full Shopify Store Audit & Report</div><div class="svc-desc">Detailed written audit of design, UX, navigation, SEO, conversion rate issues and a prioritized action plan — exactly what you're receiving now.</div></div>
+      <div class="svc-card"><div class="svc-num">02</div><div class="svc-title">Store Redesign & Theme Optimization</div><div class="svc-desc">Redesign the homepage, product pages, navigation and footer for luxury UX — hero banners, trust bars, Instagram feed, improved collection layout.</div></div>
+      <div class="svc-card"><div class="svc-num">03</div><div class="svc-title">Product Catalog Expansion (300+ SKUs)</div><div class="svc-desc">Source and onboard 200+ complementary dropshipping jewelry products via Spocket or AutoDS. Write all titles, descriptions, pricing strategy and tag structure.</div></div>
+      <div class="svc-card"><div class="svc-num">04</div><div class="svc-title">Dropshipping Setup & Integration</div><div class="svc-desc">Connect a dropshipping app to Shopify, vet suppliers for UAE shipping, map products to collections, and train the owner on managing orders.</div></div>
+      <div class="svc-card"><div class="svc-num">05</div><div class="svc-title">SEO Optimization</div><div class="svc-desc">Keyword research for fine jewelry in UAE/GCC, optimize all product titles, meta descriptions, alt texts, and collection page copy for Google ranking.</div></div>
+      <div class="svc-card"><div class="svc-num">06</div><div class="svc-title">Email Marketing Setup</div><div class="svc-desc">Install and configure Klaviyo or Shopify Email — welcome series, abandoned cart flow, post-purchase follow-up, and newsletter template.</div></div>
+      <div class="svc-card"><div class="svc-num">07</div><div class="svc-title">Conversion Rate Optimization (CRO)</div><div class="svc-desc">Add review app (Judge.me or Loox), upsell/cross-sell sections, size guide pages, bundle offers, and exit-intent popup to increase revenue per visitor.</div></div>
+      <div class="svc-card"><div class="svc-num">08</div><div class="svc-title">Multi-Currency & International Readiness</div><div class="svc-desc">Enable Shopify Markets for GBP, USD, EUR display — critical for the brand's international audience and Stockists in other markets.</div></div>
+    </div>
+  </div>
+
+  <div id="panel-msg" class="tab-panel">
+    <div class="section-title">Client outreach message</div>
+    <div class="msg-box">
+      Hi [Owner's Name],<br><br>
+      I took a close look at Ailes Jewelry and I have to say — the brand identity and craftsmanship are genuinely impressive. The active-lifestyle niche with fine gold is a brilliant and differentiated concept.<br><br>
+      That said, I identified <strong style="font-weight:500;">14 specific issues</strong> that are likely costing you visibility and sales right now. The most urgent: your store currently has <strong style="font-weight:500;">90 products</strong>, and Shopify's algorithm rewards stores with 300+ for broader search exposure and buyer trust. The good news — this is very fixable.<br><br>
+      Here's a summary of what I found and what I'd fix:<br><br>
+      <strong style="font-weight:500;">1. Product count</strong> — I can expand your catalog to 300+ by sourcing complementary dropshipping jewelry that matches your aesthetic and price range. Your physical pieces stay as the premium anchor; the dropshipping products fill the gaps and attract new customers at lower price points who grow into your signature line.<br><br>
+      <strong style="font-weight:500;">2. Homepage & navigation</strong> — The current design lacks a clear CTA, a "Best Sellers" section, and an announcement bar. I'd redesign the homepage to convert browsers into buyers.<br><br>
+      <strong style="font-weight:500;">3. Conversion tools</strong> — No email capture, no reviews, no cross-sell sections, no currency switcher. These are standard revenue tools that are simply missing.<br><br>
+      I've prepared a full detailed report with a redesign plan, a proposed 300+ product category map, and a step-by-step action list. I'd love to walk you through it.<br><br>
+      Would you be open to a quick 20-minute call this week?<br><br>
+      Best regards,<br>
+      [Your Name]
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
